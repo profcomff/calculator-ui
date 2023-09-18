@@ -96,18 +96,11 @@ watch(gasCondition, val => {
 	<div class="container">
 		<div class="rounded calc">
 			<IrdomSection title="Курс обучения">
-				<v-btn-toggle
-					v-model="data.course"
-					mandatory
-					divided
-					style="flex-wrap: wrap; height: auto"
-					@update:model-value="updateCourseHandler"
-				>
+				<v-btn-toggle v-model="data.course" class="course" mandatory @update:model-value="updateCourseHandler">
 					<v-btn value="1" style="height: 48px">1</v-btn>
 					<v-btn value="2" style="height: 48px">2</v-btn>
 					<v-btn value="3" style="height: 48px">3</v-btn>
 					<v-btn value="4" style="height: 48px">4</v-btn>
-					<br />
 					<v-btn value="5" style="height: 48px">5</v-btn>
 					<v-btn value="6" style="height: 48px">6</v-btn>
 					<v-btn value="1М" style="height: 48px">1М</v-btn>
@@ -219,5 +212,17 @@ watch(gasCondition, val => {
 	position: relative;
 	height: 100vh;
 	overflow: hidden;
+}
+
+.course {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	background: rgb(0 0 0 / 12%);
+	gap: 1.2px;
+	height: auto !important;
+}
+
+.course > button {
+	border-radius: 0 !important;
 }
 </style>
