@@ -3,7 +3,7 @@ import { computed, reactive, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { Stipend, TAX } from '../constants';
 
-const lz = (n: number) => `0${n}`.slice(-2);
+const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
 interface Data {
 	course?: string;
@@ -63,8 +63,8 @@ const formattedStipend = computed(() => {
 	const rest = Math.floor(stipend.value % 1000);
 	const float = Math.round((stipend.value % 1) * 100);
 
-	if (thousands) return `${thousands} ${rest},${lz(float)} ₽`;
-	return `${rest},${lz(float)} ₽`;
+	if (thousands) return `${thousands} ${lz(rest, 3)},${lz(float, 2)} ₽`;
+	return `${rest},${lz(float, 2)} ₽`;
 });
 
 const updateCourseHandler = () => {
