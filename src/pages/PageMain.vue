@@ -99,6 +99,7 @@ watch(gasCondition, val => {
 				<v-btn-toggle
 					v-model="data.course"
 					mandatory
+					divided
 					style="flex-wrap: wrap; height: auto"
 					@update:model-value="updateCourseHandler"
 				>
@@ -115,7 +116,7 @@ watch(gasCondition, val => {
 			</IrdomSection>
 
 			<IrdomSection title="Оценки за последнюю сессию">
-				<v-btn-toggle v-model="data.marks" multiple :disabled="nomarks">
+				<v-btn-toggle v-model="data.marks" multiple divided :disabled="nomarks">
 					<v-btn :value="3">3</v-btn>
 					<v-btn :value="4">4</v-btn>
 					<v-btn :value="5">5</v-btn>
@@ -131,35 +132,35 @@ watch(gasCondition, val => {
 			</IrdomSection>
 
 			<IrdomSection title="Пересдачи за последнюю сессию">
-				<v-btn-toggle v-model="data.retake" mandatory>
+				<v-btn-toggle v-model="data.retake" mandatory divided>
 					<v-btn :value="true">Были</v-btn>
 					<v-btn :value="false">Не были</v-btn>
 				</v-btn-toggle>
 			</IrdomSection>
 
 			<IrdomSection v-if="gasCondition" title="ПГАС">
-				<v-btn-toggle v-model="data.pgas" mandatory>
+				<v-btn-toggle v-model="data.pgas" mandatory divided>
 					<v-btn :value="true">Получаю</v-btn>
 					<v-btn :value="false">Не получаю</v-btn>
 				</v-btn-toggle>
 			</IrdomSection>
 
 			<IrdomSection title="ГСС">
-				<v-btn-toggle v-model="data.gss" mandatory>
+				<v-btn-toggle v-model="data.gss" mandatory divided>
 					<v-btn :value="true">Получаю</v-btn>
 					<v-btn :value="false">Не получаю</v-btn>
 				</v-btn-toggle>
 			</IrdomSection>
 
 			<IrdomSection title="Членство в Профсоюзе">
-				<v-btn-toggle v-model="data.member" mandatory>
+				<v-btn-toggle v-model="data.member" mandatory divided>
 					<v-btn :value="true">Состою</v-btn>
 					<v-btn :value="false">Не состою</v-btn>
 				</v-btn-toggle>
 			</IrdomSection>
 		</div>
 		<div class="d-flex elevation-10" :class="{ show: allDef }">
-			<span class="your">Ожидаемая сумма</span>
+			<span class="your">ИТОГО:</span>
 			<div class="stipend">{{ allDef ? formattedStipend : '?' }}</div>
 		</div>
 	</div>
@@ -196,7 +197,7 @@ watch(gasCondition, val => {
 	align-items: center;
 	gap: 8px;
 	justify-content: space-between;
-	padding: 0 13px;
+	padding: 0 13px 0 43px;
 	border-radius: 43px;
 	white-space: nowrap;
 	transform: translateY(112px);
