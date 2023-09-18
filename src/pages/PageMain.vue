@@ -2,7 +2,6 @@
 import { computed, reactive, ref, watch, nextTick } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { Stipend, TAX } from '../constants';
-import { setMapStoreSuffix } from 'pinia';
 
 const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
