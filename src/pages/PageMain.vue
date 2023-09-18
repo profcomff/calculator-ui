@@ -5,14 +5,22 @@ import { Stipend, TAX } from '../constants';
 
 const lz = (n: number) => `0${n}`.slice(-2);
 
-const data = reactive({
-	course: '1',
-	member: true,
-	retake: false,
-	marks: [] as number[],
-	pgas: false,
-	gss: false,
+interface Data {
+	course?: string;
+	member?: boolean;
+	retake?: boolean;
+	marks: number[];
+	pgas?: boolean;
+	gss?: boolean;
+}
+
+const data = reactive<Data>({
+	marks: [],
 });
+
+const allDef = computed(() =>
+	['course', 'member', 'retake', 'pgas', 'gss'].every(key => data[key as keyof Data] !== undefined),
+);
 
 const junior = computed(() => data.course === '1' || data.course === '2');
 const isNomarksCouse = computed(() => data.course === '1' || data.course === '1М');
@@ -87,20 +95,6 @@ const updateCourseHandler = () => {
 			</v-btn-toggle>
 		</IrdomSection>
 
-		<IrdomSection title="Членство в Профсоюзе">
-			<v-btn-toggle v-model="data.member" mandatory>
-				<v-btn :value="true">Состою</v-btn>
-				<v-btn :value="false">Не состою</v-btn>
-			</v-btn-toggle>
-		</IrdomSection>
-
-		<IrdomSection title="Пересдачи за последнюю сессию">
-			<v-btn-toggle v-model="data.retake" mandatory>
-				<v-btn :value="true">Были</v-btn>
-				<v-btn :value="false">Не были</v-btn>
-			</v-btn-toggle>
-		</IrdomSection>
-
 		<IrdomSection title="Оценки за последнюю сессию">
 			<v-btn-toggle v-model="data.marks" multiple :disabled="nomarks">
 				<v-btn :value="3">3</v-btn>
@@ -117,6 +111,20 @@ const updateCourseHandler = () => {
 			></v-checkbox>
 		</IrdomSection>
 
+		<IrdomSection title="Членство в Профсоюзе">
+			<v-btn-toggle v-model="data.member" mandatory>
+				<v-btn :value="true">Состою</v-btn>
+				<v-btn :value="false">Не состою</v-btn>
+			</v-btn-toggle>
+		</IrdomSection>
+
+		<IrdomSection title="Пересдачи за последнюю сессию">
+			<v-btn-toggle v-model="data.retake" mandatory>
+				<v-btn :value="true">Были</v-btn>
+				<v-btn :value="false">Не были</v-btn>
+			</v-btn-toggle>
+		</IrdomSection>
+
 		<IrdomSection title="ПГАС">
 			<v-btn-toggle v-model="data.pgas" mandatory>
 				<v-btn :value="true">Получаю</v-btn>
@@ -131,7 +139,7 @@ const updateCourseHandler = () => {
 			</v-btn-toggle>
 		</IrdomSection>
 	</div>
-	<div class="d-flex">
+	<div v-if="allDef" class="d-flex">
 		<div class="your">Ожидаемая сумма:</div>
 		<div class="stipend">{{ formattedStipend }}</div>
 	</div>
