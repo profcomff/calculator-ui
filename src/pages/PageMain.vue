@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch, nextTick } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { Stipend, TAX } from '../constants';
+import { setMapStoreSuffix } from 'pinia';
 
 const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
@@ -72,6 +73,15 @@ const updateCourseHandler = () => {
 		nomarks.value = false;
 	}
 };
+
+watch(allDef, val => {
+	console.log(val);
+	if (val) {
+		nextTick(() => {
+			window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+		});
+	}
+});
 </script>
 
 <template>
