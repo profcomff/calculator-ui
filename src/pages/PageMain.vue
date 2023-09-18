@@ -153,7 +153,10 @@ watch(gasCondition, val => {
 		<div class="d-flex elevation-10" :class="{ show: allDef }">
 			<div class="your">
 				<span>ИТОГО: </span>
-				<IrdomTooltip text="Марк обеднел на:" />
+				<IrdomTooltip text="">
+					Получение этой суммы не гарантировано.<br />
+					С вопросами обращайтесь в Профком.
+				</IrdomTooltip>
 			</div>
 			<div class="stipend">{{ allDef ? formattedStipend : '?' }}</div>
 		</div>
