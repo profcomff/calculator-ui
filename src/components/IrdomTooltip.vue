@@ -10,5 +10,3 @@ defineProps<{ text: string }>();
 		<slot />
 	</v-tooltip>
 </template>
-
-<style scoped></style>
