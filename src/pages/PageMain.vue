@@ -18,9 +18,11 @@ const data = reactive<Data>({
 	marks: [],
 });
 
-const allDef = computed(() =>
-	['course', 'member', 'retake', 'pgas', 'gss'].every(key => data[key as keyof Data] !== undefined),
-);
+const allDef = computed(() => {
+	const every = ['course', 'member', 'retake', 'gss'].every(key => data[key as keyof Data] !== undefined);
+	const pgas = !gasCondition.value || data.pgas !== undefined;
+	return every && pgas;
+});
 
 const junior = computed(() => data.course === '1' || data.course === '2');
 const isNomarksCouse = computed(() => data.course === '1' || data.course === '1М');
@@ -32,15 +34,16 @@ const nomarksHandler = (val: boolean) => {
 	}
 };
 
+const gasCondition = computed(() => data.retake === false && !data.marks.includes(3));
+
 const stipend = computed(() => {
 	let sum = 0;
 
-	const gasCondition = data.retake === false && !data.marks.includes(3);
-	const pgasCondition = data.pgas === true && data.retake === false;
+	const pgasCondition = gasCondition.value && data.pgas === true;
 	const gssCondition = data.gss === true;
 	const pgssCondition = gssCondition && junior.value && data.marks.length && !data.marks.includes(3);
 
-	if (gasCondition) {
+	if (gasCondition.value) {
 		if (!data.marks.length) sum += Stipend.gas.miss;
 		else if (data.marks.includes(4) && data.marks.includes(5)) sum += Stipend.gas.with4and5;
 		else if (data.marks.includes(4)) sum += Stipend.gas.only4;
@@ -74,11 +77,16 @@ const updateCourseHandler = () => {
 };
 
 watch(allDef, val => {
-	console.log(val);
 	if (val) {
 		nextTick(() => {
 			window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 		});
+	}
+});
+
+watch(gasCondition, val => {
+	if (!val) {
+		data.pgas = false;
 	}
 });
 </script>
@@ -120,13 +128,6 @@ watch(allDef, val => {
 			></v-checkbox>
 		</IrdomSection>
 
-		<IrdomSection title="Членство в Профсоюзе">
-			<v-btn-toggle v-model="data.member" mandatory>
-				<v-btn :value="true">Состою</v-btn>
-				<v-btn :value="false">Не состою</v-btn>
-			</v-btn-toggle>
-		</IrdomSection>
-
 		<IrdomSection title="Пересдачи за последнюю сессию">
 			<v-btn-toggle v-model="data.retake" mandatory>
 				<v-btn :value="true">Были</v-btn>
@@ -134,7 +135,7 @@ watch(allDef, val => {
 			</v-btn-toggle>
 		</IrdomSection>
 
-		<IrdomSection title="ПГАС">
+		<IrdomSection v-if="gasCondition" title="ПГАС">
 			<v-btn-toggle v-model="data.pgas" mandatory>
 				<v-btn :value="true">Получаю</v-btn>
 				<v-btn :value="false">Не получаю</v-btn>
@@ -145,6 +146,13 @@ watch(allDef, val => {
 			<v-btn-toggle v-model="data.gss" mandatory>
 				<v-btn :value="true">Получаю</v-btn>
 				<v-btn :value="false">Не получаю</v-btn>
+			</v-btn-toggle>
+		</IrdomSection>
+
+		<IrdomSection title="Членство в Профсоюзе">
+			<v-btn-toggle v-model="data.member" mandatory>
+				<v-btn :value="true">Состою</v-btn>
+				<v-btn :value="false">Не состою</v-btn>
 			</v-btn-toggle>
 		</IrdomSection>
 	</div>
