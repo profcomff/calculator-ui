@@ -12,6 +12,7 @@ export const vuetify = createVuetify({
 	defaults: {
 		VBtnToggle: {
 			color: 'rgb(0, 1, 76)',
+			elevation: 1,
 		},
 		VCheckbox: {
 			color: 'rgb(0, 1, 76)',
