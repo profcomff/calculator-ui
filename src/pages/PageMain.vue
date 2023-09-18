@@ -18,12 +18,6 @@ const data = reactive<Data>({
 	marks: [],
 });
 
-const allDef = computed(() => {
-	const every = ['course', 'member', 'retake', 'gss'].every(key => data[key as keyof Data] !== undefined);
-	const pgas = !gasCondition.value || data.pgas !== undefined;
-	return every && pgas;
-});
-
 const junior = computed(() => data.course === '1' || data.course === '2');
 const isNomarksCouse = computed(() => data.course === '1' || data.course === '1М');
 
@@ -33,6 +27,13 @@ const nomarksHandler = (val: boolean) => {
 		data.marks = [];
 	}
 };
+
+const allDef = computed(() => {
+	const every = ['course', 'member', 'retake', 'gss'].every(key => data[key as keyof Data] !== undefined);
+	const pgas = !gasCondition.value || data.pgas !== undefined;
+	const marks = nomarks.value || data.marks.length;
+	return every && pgas && marks;
+});
 
 const gasCondition = computed(() => data.retake === false && !data.marks.includes(3));
 
