@@ -158,28 +158,39 @@ watch(gasCondition, val => {
 		</IrdomSection>
 	</div>
 	<div v-if="allDef" class="d-flex">
-		<div class="your">Ожидаемая сумма:</div>
+		<span class="your">Ожидаемая сумма</span>
 		<div class="stipend">{{ formattedStipend }}</div>
 	</div>
 </template>
 
 <style scoped>
 .stipend {
+	height: 54px;
+	display: flex;
+	align-items: center;
 	font-size: 30px;
 	background: rgb(0, 1, 76);
 	color: white;
 	border-radius: 999px;
-	padding: 4px 16px;
+	padding: 0 16px;
+	min-width: fit-content;
 }
 
 .your {
-	font-size: 20px;
+	font-size: 18px;
+	line-height: 24px;
+	text-align: right;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow-wrap: anywhere;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
 }
 
 .d-flex {
 	align-items: center;
 	gap: 8px;
-	flex-wrap: wrap;
-	padding: 24px;
+	float: right;
+	padding: 24px 8px;
 }
 </style>
