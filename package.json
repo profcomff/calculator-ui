@@ -9,7 +9,8 @@
 		"preview": "vite preview",
 		"lint": "eslint --ext .ts,.vue . --fix",
 		"format": "prettier . --write",
-		"stylelint": "stylelint \"**/*.{vue,css}\" --fix"
+		"stylelint": "stylelint \"**/*.{vue,css}\" --fix",
+		"test": "echo kek"
 	},
 	"dependencies": {
 		"pinia": "^2.1.6",
