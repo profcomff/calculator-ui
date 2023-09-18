@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch, nextTick } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { Stipend, TAX } from '../constants';
+import IrdomTooltip from '../components/IrdomTooltip.vue';
 
 const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
@@ -25,6 +26,9 @@ const nomarks = ref(false);
 const nomarksHandler = (val: boolean) => {
 	if (val) {
 		data.marks = [];
+		data.retake = false;
+	} else {
+		data.retake = undefined;
 	}
 };
 
@@ -77,16 +81,10 @@ const updateCourseHandler = () => {
 	}
 };
 
-watch(allDef, val => {
-	if (val) {
-		nextTick(() => {
-			window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-		});
-	}
-});
-
 watch(gasCondition, val => {
-	if (!val) {
+	if (val) {
+		data.pgas = undefined;
+	} else {
 		data.pgas = false;
 	}
 });
@@ -124,7 +122,7 @@ watch(gasCondition, val => {
 				></v-checkbox>
 			</IrdomSection>
 
-			<IrdomSection title="Пересдачи за последнюю сессию">
+			<IrdomSection v-if="!nomarks" title="Пересдачи за последнюю сессию">
 				<v-btn-toggle v-model="data.retake" mandatory divided>
 					<v-btn :value="true">Были</v-btn>
 					<v-btn :value="false">Не были</v-btn>
@@ -153,7 +151,10 @@ watch(gasCondition, val => {
 			</IrdomSection>
 		</div>
 		<div class="d-flex elevation-10" :class="{ show: allDef }">
-			<span class="your">ИТОГО:</span>
+			<div class="your">
+				<span>ИТОГО: </span>
+				<IrdomTooltip text="Марк обеднел на:" />
+			</div>
 			<div class="stipend">{{ allDef ? formattedStipend : '?' }}</div>
 		</div>
 	</div>
@@ -177,6 +178,9 @@ watch(gasCondition, val => {
 	font-size: 18px;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 }
 
 .d-flex {
