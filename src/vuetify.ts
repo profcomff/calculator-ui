@@ -11,10 +11,11 @@ export const vuetify = createVuetify({
 	},
 	defaults: {
 		VBtnToggle: {
-			color: 'rgb(255, 139, 0)',
+			color: 'rgb(0, 1, 76)',
+			elevation: 1,
 		},
 		VCheckbox: {
-			color: 'rgb(255, 139, 0)',
+			color: 'rgb(0, 1, 76)',
 		},
 	},
 });
