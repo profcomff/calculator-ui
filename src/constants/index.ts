@@ -5,9 +5,9 @@ export const Stipend = {
 		with4and5: 3382,
 		only5: 3677,
 	},
-	pgas: 13548,
+	pgas: 14261,
 	gss: 4413,
-	pgss: 13873,
+	pgss: 14269,
 };
 
 export const TAX = 0.04;
