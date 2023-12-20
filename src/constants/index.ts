@@ -1,12 +1,12 @@
 export const Stipend = {
 	gas: {
-		only4: 2941,
-		miss: 2941,
-		with4and5: 3382,
-		only5: 3677,
+		only4: 5200,
+		miss: 5200,
+		with4and5: 5980,
+		only5: 6500,
 	},
 	pgas: 14261,
-	gss: 4413,
+	gss: 7800,
 	pgss: 14269,
 };
 
