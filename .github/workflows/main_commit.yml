@@ -26,7 +26,9 @@ jobs:
                   cache: 'pnpm'
 
             - name: Install
-              run: pnpm install
+              run: |
+                pnpm config set auto-install-peers true
+                pnpm install
 
             - name: Check
               run: pnpm lint && pnpm stylelint

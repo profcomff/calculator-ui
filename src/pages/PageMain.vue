@@ -215,6 +215,7 @@ watch(gasCondition, val => {
 	height: 100%;
 	padding: 24px 24px 112px;
 }
+
 .container {
 	position: relative;
 	height: 100vh;
