@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { Stipend, TAX } from '../constants/';
 
@@ -22,25 +22,27 @@ const emptyResult: Result = {
 };
 
 const flattenStipend = (options: typeof Stipend): Array<Array<number>> => {
-	let convertedStipend: number[][] = [];
-	for (const property in options) {
+	const convertedStipend = [];
+	let property: keyof typeof Stipend;
+	for (property in options) {
 		let value: number[] =
 			typeof options[property] === 'number' ? [options[property]] : Object.values(options[property]);
 		value.push(0);
 		convertedStipend.push(value);
 	}
-
 	return convertedStipend;
 };
 
 const getCombinations = (options: number[][]): number[][] => {
-	const nestedArrayLength = (arr: number[][]): number => arr.flat(2).length;
-	const untaxedTotalCombinations: number = nestedArrayLength(options);
-	let tempResult: number[][] = [];
-	for (let i = 0; i < tempResult.length; i++) {
-		tempResult[i] = [];
-	}
-	console.log(tempResult);
+	const combinationLength = (arr: number[][]): number => {
+		let length = 1;
+		for (const elem of arr) {
+			length *= elem.length;
+		}
+		return length;
+	};
+	const untaxedTotalCombinations: number = combinationLength(options);
+	const tempResult: number[][] = [];
 
 	let valuePeriod: number = 1;
 	for (const stipendType in options) {
@@ -48,10 +50,12 @@ const getCombinations = (options: number[][]): number[][] => {
 		valuePeriod *= typeCombinations;
 		for (let i: number = 0; i < untaxedTotalCombinations; i++) {
 			const currValue = Math.floor(i / (untaxedTotalCombinations / valuePeriod)) % typeCombinations;
+			if (tempResult[i] === undefined) {
+				tempResult[i] = [];
+			}
 			tempResult[i].push(options[stipendType][currValue]);
 		}
 	}
-	console.log(tempResult);
 	return tempResult;
 };
 
@@ -69,30 +73,22 @@ const getTaxedCombinations = (options: number[][]): Result[] => {
 		const taxedResult = Object.assign({}, untaxedResult);
 		taxedResult.sum = untaxedResult.sum * (1 - TAX);
 		taxedResult.tax = -untaxedResult.sum * TAX;
-		results.push(taxedResult, untaxedResult);
+		results.push(taxedResult);
+		results.push(untaxedResult);
 	}
-
-	console.log(results);
 	return results;
 };
 
 const combinations: Array<Result> = getTaxedCombinations(getCombinations(flattenStipend(Stipend)));
 const inputSum = ref(0);
 
-const recount = () => {
-	const result = combinations.find(o => o.sum <= Number(inputSum.value) + 50 && o.sum >= Number(inputSum.value) - 50);
-	// console.log(result);
-	if (result) {
-		document.getElementById('gas')!.textContent = result['gas'] + ' ₽';
-		document.getElementById('pgas')!.textContent = result['pgas'] + ' ₽';
-		document.getElementById('gss')!.textContent = result['gss'] + ' ₽';
-		document.getElementById('pgss')!.textContent = result['pgss'] + ' ₽';
-		document.getElementById('tax')!.textContent = result['tax'] + ' ₽';
-		document.getElementById('result')!.textContent = result['sum'] + ' ₽';
-	} else {
-		document.getElementById('result')!.textContent = 'Нет такого варианта';
-	}
-};
+let result: Result = emptyResult;
+const recount = computed(() => {
+	result =
+		combinations.find(o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1) ??
+		emptyResult;
+	return result;
+});
 </script>
 
 <template>
@@ -106,29 +102,29 @@ const recount = () => {
 			<div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ГАС</v-sheet>
-					<div id="gas" class="sum-plus">0 ₽</div>
+					<div id="gas" class="sum-plus">{{ recount['gas'] }}₽</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ПГАС</v-sheet>
-					<div id="pgas" class="sum-plus">0 ₽</div>
+					<div id="pgas" class="sum-plus">{{ recount['pgas'] }}₽</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ГСС</v-sheet>
-					<div id="gss" class="sum-plus">0 ₽</div>
+					<div id="gss" class="sum-plus">{{ recount['gss'] }}₽</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ПГСС</v-sheet>
-					<div id="pgss" class="sum-plus">0 ₽</div>
+					<div id="pgss" class="sum-plus">{{ recount['pgss'] }}₽</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">Профвзнос</v-sheet>
-					<div id="tax" class="sum-minus">-0 ₽</div>
+					<div id="tax" class="sum-minus">{{ recount['tax'] }}₽</div>
 				</div>
 			</div>
 			<v-divider />
 			<div class="your d-flex justify-space-between">
 				<div class="result">Сумма:</div>
-				<div id="result" class="stipend">0 ₽</div>
+				<div id="result" class="stipend">{{ recount['sum'] }} ₽</div>
 			</div>
 		</div>
 	</div>
