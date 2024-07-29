@@ -1,71 +1,96 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
+import { Stipend, TAX } from '../constants/';
 
-function getCombinations(options, optionIndex, results, current) {
-	var allKeys = Object.keys(options);
-	const optionKey = allKeys[optionIndex];
-
-	const vals = options[optionKey];
-
-	for (var i = 0; i < vals.length; i++) {
-		current[optionKey] = vals[i];
-
-		if (optionIndex + 1 < allKeys.length) {
-			getCombinations(options, optionIndex + 1, results, current);
-		} else {
-			var res = JSON.parse(JSON.stringify(current));
-			results.push(res);
-		}
-	}
-
-	return results;
+interface Result {
+	sum: number;
+	gas: number;
+	pgas: number;
+	gss: number;
+	pgss: number;
+	tax: number;
 }
 
-const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b, 0);
-
-const Stipend = {
-	'gas': [0, 2941, 3382, 3367],
-	'pgas': [0, 13685],
-	'gss': [0, 4413],
-	'pgss': [0, 14364],
+const emptyResult: Result = {
+	sum: 0,
+	gas: 0,
+	pgas: 0,
+	gss: 0,
+	pgss: 0,
+	tax: 0,
 };
 
-var tempResults = getCombinations(Stipend, 0, [], {});
-var sum = 0;
-var tax = 0;
+const flattenStipend = (options: typeof Stipend): Array<Array<number>> => {
+	let convertedStipend: number[][] = [];
+	for (const property in options) {
+		let value: number[] =
+			typeof options[property] === 'number' ? [options[property]] : Object.values(options[property]);
+		value.push(0);
+		convertedStipend.push(value);
+	}
 
-const results = [];
+	return convertedStipend;
+};
 
-for (const tempRes of tempResults) {
-	sum = sumValues(tempRes);
-	tax = 0.04 * sum;
-	const res = Object.assign({}, tempRes);
-	res['sum'] = sum;
-	res['tax'] = 0;
-	results.push(res);
-	const resTax = Object.assign({}, tempRes);
-	resTax['sum'] = sum * 0.96;
-	resTax['tax'] = -tax;
-	results.push(resTax);
-}
+const getCombinations = (options: number[][]): number[][] => {
+	const nestedArrayLength = (arr: number[][]): number => arr.flat(2).length;
+	const untaxedTotalCombinations: number = nestedArrayLength(options);
+	let tempResult: number[][] = [];
+	for (let i = 0; i < tempResult.length; i++) {
+		tempResult[i] = [];
+	}
+	console.log(tempResult);
 
-console.log(results);
+	let valuePeriod: number = 1;
+	for (const stipendType in options) {
+		const typeCombinations = options[stipendType].length;
+		valuePeriod *= typeCombinations;
+		for (let i: number = 0; i < untaxedTotalCombinations; i++) {
+			const currValue = Math.floor(i / (untaxedTotalCombinations / valuePeriod)) % typeCombinations;
+			tempResult[i].push(options[stipendType][currValue]);
+		}
+	}
+	console.log(tempResult);
+	return tempResult;
+};
 
+const getTaxedCombinations = (options: number[][]): Result[] => {
+	const results: Array<Result> = [];
+	for (const elem of options) {
+		const untaxedResult: Result = Object.assign({}, emptyResult);
+		untaxedResult.gas = elem[0];
+		untaxedResult.pgas = elem[1];
+		untaxedResult.gss = elem[2];
+		untaxedResult.pgss = elem[3];
+		untaxedResult.sum = elem.reduce((a, b) => a + b);
+		untaxedResult.tax = 0;
+
+		const taxedResult = Object.assign({}, untaxedResult);
+		taxedResult.sum = untaxedResult.sum * (1 - TAX);
+		taxedResult.tax = -untaxedResult.sum * TAX;
+		results.push(taxedResult, untaxedResult);
+	}
+
+	console.log(results);
+	return results;
+};
+
+const combinations: Array<Result> = getTaxedCombinations(getCombinations(flattenStipend(Stipend)));
 const inputSum = ref(0);
 
 const recount = () => {
-	const obj = results.find(o => o.sum === Number(inputSum.value));
-	console.log(obj);
-	if (obj !== undefined) {
-		document.getElementById('gas').textContent = obj['gas'] + ' ₽';
-		document.getElementById('pgas').textContent = obj['pgas'] + ' ₽';
-		document.getElementById('gss').textContent = obj['gss'] + ' ₽';
-		document.getElementById('pgss').textContent = obj['pgss'] + ' ₽';
-		document.getElementById('tax').textContent = obj['tax'] + ' ₽';
-		document.getElementById('result').textContent = obj['sum'] + ' ₽';
+	const result = combinations.find(o => o.sum <= Number(inputSum.value) + 50 && o.sum >= Number(inputSum.value) - 50);
+	// console.log(result);
+	if (result) {
+		document.getElementById('gas')!.textContent = result['gas'] + ' ₽';
+		document.getElementById('pgas')!.textContent = result['pgas'] + ' ₽';
+		document.getElementById('gss')!.textContent = result['gss'] + ' ₽';
+		document.getElementById('pgss')!.textContent = result['pgss'] + ' ₽';
+		document.getElementById('tax')!.textContent = result['tax'] + ' ₽';
+		document.getElementById('result')!.textContent = result['sum'] + ' ₽';
 	} else {
-		document.getElementById('result').textContent = 'Нет такого варианта';
+		document.getElementById('result')!.textContent = 'Нет такого варианта';
 	}
 };
 </script>
