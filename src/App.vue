@@ -17,11 +17,4 @@
 	width: min(900px, 100%);
 	margin: 0 auto;
 }
-
-a {
-	outline: none;
-	text-decoration: none;
-	padding: 2px 1px 0;
-	color: white;
-}
 </style>
