@@ -127,7 +127,7 @@ const formattedStipend = (stipend: number): string => {
 			</IrdomSection>
 			<div>
 				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">ГАС</v-sheet>
+					<div class="pay">ГАС</div>
 					<div id="gas" class="sum-plus">{{ formattedStipend(recount['gas']) }}</div>
 				</div>
 				<div class="d-flex justify-space-between">
@@ -159,7 +159,9 @@ const formattedStipend = (stipend: number): string => {
 <style scoped>
 .pay {
 	text-align: left;
+	vertical-align: bottom;
 	font-size: 25px;
+	margin: 13px 0px 10px 0px;
 }
 
 .sum-plus {
@@ -194,7 +196,7 @@ const formattedStipend = (stipend: number): string => {
 	height: 54px;
 	display: flex;
 	align-items: center;
-	font-size: 40px;
+	font-size: 35px;
 	background: rgb(221, 221, 231);
 	color: white;
 	border-radius: 999px;
@@ -217,5 +219,11 @@ const formattedStipend = (stipend: number): string => {
 	position: relative;
 	height: 100vh;
 	overflow: hidden;
+}
+
+.calc {
+	overflow-y: auto;
+	height: 100%;
+	padding: 24px 24px 112px;
 }
 </style>
