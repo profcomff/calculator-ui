@@ -2,11 +2,11 @@
 
 <template>
 	<v-app>
-		<nav>
-			<RouterLink to="/calc">Calc </RouterLink>
-			<RouterLink to="/reverse-calc">Reverse-Calc</RouterLink>
-		</nav>
 		<main class="main">
+			<v-tabs bg-color="rgb(0, 1, 76)" grow="true">
+				<v-tab value="one"> <RouterLink to="/calc">Рассчитать выплату</RouterLink> </v-tab>
+				<v-tab value="two"> <RouterLink to="/reverse-calc">Узнать составляющие выплаты</RouterLink> </v-tab>
+			</v-tabs>
 			<RouterView />
 		</main>
 	</v-app>
@@ -16,5 +16,12 @@
 .main {
 	width: min(900px, 100%);
 	margin: 0 auto;
+}
+
+a {
+	outline: none;
+	text-decoration: none;
+	padding: 2px 1px 0;
+	color: white;
 }
 </style>
