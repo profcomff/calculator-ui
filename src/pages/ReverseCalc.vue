@@ -105,6 +105,17 @@ const recount = computed(() => {
 	return result;
 });
 
+const found = computed(() => {
+	let foundResult = combinations.find(
+		o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1,
+	);
+	if (foundResult) {
+		return true;
+	} else {
+		return false;
+	}
+});
+
 const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
 const formattedStipend = (stipend: number): string => {
@@ -150,7 +161,7 @@ const formattedStipend = (stipend: number): string => {
 			<v-divider />
 			<div class="your d-flex justify-space-between">
 				<div class="result">Сумма:</div>
-				<div id="result" class="stipend">{{ formattedStipend(recount['sum']) }}</div>
+				<div id="result" class="stipend">{{ found ? formattedStipend(recount['sum']) : 'Не найдено' }}</div>
 			</div>
 		</div>
 	</div>
