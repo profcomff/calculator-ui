@@ -91,11 +91,12 @@ const getSumAndTax = (options: Result[]): Result[] => {
 		results.push(taxedResult);
 		results.push(untaxedResult);
 	}
+	console.log(results);
 	return results;
 };
 
 const combinations: Array<Result> = getSumAndTax(getCombinations(flattenStipend(Stipend)));
-const inputSum = ref(0);
+const inputSum = ref<string>('');
 
 let result: Result = emptyResult;
 const recount = computed(() => {
@@ -119,9 +120,20 @@ const found = computed(() => {
 const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
 const formattedStipend = (stipend: number): string => {
-	const thousands = Math.floor(stipend / 1000);
-	const rest = Math.floor(stipend % 1000);
-	const float = Math.round((stipend % 1) * 100);
+	let thousands: number;
+	let rest: number;
+	let float: number;
+	if (stipend > 0) {
+		thousands = Math.floor(stipend / 1000);
+		float = Math.round((stipend % 1) * 100);
+		rest = Math.floor(stipend % 1000);
+	} else {
+		thousands = Math.ceil(stipend / 1000);
+		rest = Math.ceil(stipend % 1000);
+		float = Math.round((stipend % 1) * 100);
+	}
+
+	console.log(thousands, rest, float);
 
 	if (thousands) return `${thousands} ${lz(rest, 3)},${lz(float, 2)} ₽`;
 	return `${rest},${lz(float, 2)} ₽`;
@@ -133,7 +145,6 @@ const formattedStipend = (stipend: number): string => {
 		<div class="rounded calc">
 			<IrdomSection title="Введите полученную сумму">
 				<v-text-field v-model="inputSum" label="Полученная сумма" @update:model-value="recount"></v-text-field>
-				<!-- <p id="some">f</p> -->
 				<v-divider />
 			</IrdomSection>
 			<div>

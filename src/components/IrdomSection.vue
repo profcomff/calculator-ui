@@ -17,7 +17,7 @@ defineProps<{
 	font-size: 20px;
 }
 
-.section:not(:last-child) {
+.section {
 	margin-bottom: 35px;
 }
 </style>
