@@ -1,11 +1,26 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { router } from './router/index';
+
+const currentTab = ref<'calc' | 'reverse-calc'>('calc');
+
+const onChangeTab = () => {
+	router.push(`/${currentTab.value}`);
+};
+</script>
 
 <template>
 	<v-app>
 		<main class="main">
-			<v-tabs bg-color="rgb(0, 1, 76)" grow="true">
-				<v-tab value="one"> <RouterLink to="/calc">Рассчитать выплату</RouterLink> </v-tab>
-				<v-tab value="two"> <RouterLink to="/reverse-calc">Узнать составляющие выплаты</RouterLink> </v-tab>
+			<v-tabs
+				v-model="currentTab"
+				bg-color="rgb(0, 1, 76)"
+				grow="true"
+				color="white"
+				@update:model-value="onChangeTab"
+			>
+				<v-tab value="calc"> Рассчитать выплату </v-tab>
+				<v-tab value="reverse-calc"> Узнать составляющие выплаты </v-tab>
 			</v-tabs>
 			<RouterView />
 		</main>
@@ -15,6 +30,9 @@
 <style scoped>
 .main {
 	width: min(900px, 100%);
-	margin: 0 auto;
+	min-height: 200vh;
+	margin: auto;
+	position: fixed;
+	align-self: center;
 }
 </style>
