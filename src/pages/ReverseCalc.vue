@@ -91,7 +91,6 @@ const getSumAndTax = (options: Result[]): Result[] => {
 		results.push(taxedResult);
 		results.push(untaxedResult);
 	}
-	console.log(results);
 	return results;
 };
 
