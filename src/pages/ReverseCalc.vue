@@ -97,6 +97,14 @@ const getSumAndTax = (options: Result[]): Result[] => {
 const combinations: Array<Result> = getSumAndTax(getCombinations(flattenStipend(Stipend)));
 const inputSum = ref<string>('');
 
+function formatInput(input: string) {
+	if (!/[^0-9.]/.test(input)) {
+		return true;
+	} else {
+		return 'Недопустимые символы';
+	}
+}
+
 let result: Result = emptyResult;
 const recount = computed(() => {
 	result =
@@ -140,7 +148,12 @@ const formattedStipend = (stipend: number): string => {
 	<div class="container">
 		<div class="rounded calc">
 			<IrdomSection title="Введите полученную сумму">
-				<v-text-field v-model="inputSum" label="Полученная сумма" @update:model-value="recount"></v-text-field>
+				<v-text-field
+					v-model="inputSum"
+					label="Полученная сумма"
+					:rules="[formatInput]"
+					@update:model-value="recount"
+				></v-text-field>
 				<v-divider />
 			</IrdomSection>
 			<div>
