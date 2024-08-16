@@ -143,7 +143,7 @@ watch(gasCondition, val => {
 				</v-btn-toggle>
 			</IrdomSection>
 
-			<IrdomSection class="union-membership" title="Членство в Профсоюзе">
+			<IrdomSection class="mb-12" title="Членство в Профсоюзе">
 				<v-btn-toggle v-model="data.member" mandatory divided>
 					<v-btn :value="true">Состою</v-btn>
 					<v-btn :value="false">Не состою</v-btn>
@@ -232,9 +232,5 @@ watch(gasCondition, val => {
 
 .course > button {
 	border-radius: 0 !important;
-}
-
-.union-membership {
-	margin: 100;
 }
 </style>

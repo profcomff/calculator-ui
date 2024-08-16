@@ -98,7 +98,9 @@ const combinations: Array<Result> = getSumAndTax(getCombinations(flattenStipend(
 const inputSum = ref<string>('');
 
 function formatInput(input: string) {
-	if (!/[^0-9.]/.test(input)) {
+	if (input.length === 0) {
+		return true;
+	} else if (/^[0-9]+\.?[0-9]{0,2}$/.test(input)) {
 		return true;
 	} else {
 		return 'Недопустимые символы';
