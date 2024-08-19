@@ -111,10 +111,8 @@ function formatInput(input: string) {
 
 let result: Result = emptyResult;
 const recount = computed(() => {
-	inputSum.value = inputSum.value.replace(',', '.');
-	result =
-		combinations.find(o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1) ??
-		emptyResult;
+	const tempInput = inputSum.value.replace(',', '.');
+	result = combinations.find(o => o.sum <= Number(tempInput) + 1 && o.sum >= Number(tempInput) - 1) ?? emptyResult;
 	return result;
 });
 
