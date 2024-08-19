@@ -28,6 +28,8 @@ const emptyResult: Result = {
 	tax: 0,
 };
 
+const screenWidth = window.innerWidth;
+
 const flattenStipend = (options: typeof Stipend): typeof convertedStipend => {
 	const newOptions: typeof convertedStipend = Object.assign({}, convertedStipend);
 	let property: keyof typeof Stipend;
@@ -100,7 +102,7 @@ const inputSum = ref<string>('');
 function formatInput(input: string) {
 	if (input.length === 0) {
 		return true;
-	} else if (/^[0-9]+\.?[0-9]{0,2}$/.test(input)) {
+	} else if (/^[0-9]+[\\.,]?[0-9]{0,2}$/.test(input)) {
 		return true;
 	} else {
 		return 'Недопустимые символы';
@@ -109,6 +111,7 @@ function formatInput(input: string) {
 
 let result: Result = emptyResult;
 const recount = computed(() => {
+	inputSum.value = inputSum.value.replace(',', '.');
 	result =
 		combinations.find(o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1) ??
 		emptyResult;
@@ -149,16 +152,16 @@ const formattedStipend = (stipend: number): string => {
 <template>
 	<div class="container">
 		<div class="rounded calc">
-			<IrdomSection title="Введите полученную сумму">
+			<IrdomSection class="mb-0" title="Введите полученную сумму">
 				<v-text-field
 					v-model="inputSum"
 					label="Полученная сумма"
 					:rules="[formatInput]"
 					@update:model-value="recount"
 				></v-text-field>
-				<v-divider />
+				<v-divider class="ma-0" />
 			</IrdomSection>
-			<div>
+			<div class="ma-0">
 				<div class="d-flex justify-space-between">
 					<div class="pay">ГАС</div>
 					<div id="gas" class="sum-plus">{{ formattedStipend(recount['gas']) }}</div>
@@ -182,8 +185,10 @@ const formattedStipend = (stipend: number): string => {
 			</div>
 			<v-divider />
 			<div class="your d-flex justify-space-between">
-				<div class="result">Сумма:</div>
-				<div id="result" class="stipend">{{ found ? formattedStipend(recount['sum']) : 'Не найдено' }}</div>
+				<div class="text-h4">Сумма:</div>
+				<div class="stipend text-h4" :class="screenWidth < 800 ? 'text-h5' : 'text-h4'">
+					{{ found ? formattedStipend(recount['sum']) : 'Не найдено' }}
+				</div>
 			</div>
 		</div>
 	</div>
