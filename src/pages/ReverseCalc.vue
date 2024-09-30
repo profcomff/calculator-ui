@@ -162,29 +162,29 @@ const formattedStipend = (stipend: number): string => {
 			<div class="ma-0">
 				<div class="d-flex justify-space-between">
 					<div class="pay">ГАС</div>
-					<div id="gas" class="sum-plus">{{ formattedStipend(recount['gas']) }}</div>
+					<div id="gas" class="sum-plus bg-primary">{{ formattedStipend(recount['gas']) }}</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ПГАС</v-sheet>
-					<div id="pgas" class="sum-plus">{{ formattedStipend(recount['pgas']) }}</div>
+					<div id="pgas" class="sum-plus bg-primary">{{ formattedStipend(recount['pgas']) }}</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ГСС</v-sheet>
-					<div id="gss" class="sum-plus">{{ formattedStipend(recount['gss']) }}</div>
+					<div id="gss" class="sum-plus bg-primary">{{ formattedStipend(recount['gss']) }}</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ПГСС</v-sheet>
-					<div id="pgss" class="sum-plus">{{ formattedStipend(recount['pgss']) }}</div>
+					<div id="pgss" class="sum-plus bg-primary">{{ formattedStipend(recount['pgss']) }}</div>
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">Профвзнос</v-sheet>
-					<div id="tax" class="sum-minus">{{ formattedStipend(recount['tax']) }}</div>
+					<div id="tax" class="sum-plus bg-primary">{{ formattedStipend(recount['tax']) }}</div>
 				</div>
 			</div>
 			<v-divider />
 			<div class="your d-flex justify-space-between">
 				<div class="text-h4">Сумма:</div>
-				<div class="stipend text-h4" :class="screenWidth < 800 ? 'text-h5' : 'text-h4'">
+				<div class="stipend bg-secondary" :class="screenWidth < 800 ? 'text-h5' : 'text-h4'">
 					{{ found ? formattedStipend(recount['sum']) : 'Не найдено' }}
 				</div>
 			</div>
@@ -205,8 +205,6 @@ const formattedStipend = (stipend: number): string => {
 	display: flex;
 	align-items: center;
 	font-size: 20px;
-	background: green;
-	color: white;
 	border-radius: 999px;
 	margin: 10px 0px 10px 0px;
 	padding: 0px 30px;
@@ -219,8 +217,6 @@ const formattedStipend = (stipend: number): string => {
 	display: flex;
 	align-items: center;
 	font-size: 20px;
-	background: red;
-	color: white;
 	border-radius: 999px;
 	padding: 0 30px;
 	margin: 10px 0px 10px 0px;
