@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
-import { Stipend, TAX } from '../constants';
+import { PAYMENTS, TAX } from '../constants';
 import IrdomTooltip from '../components/IrdomTooltip.vue';
-
-const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
+import { lz } from '../utils';
 
 interface Data {
 	course?: string;
@@ -20,10 +19,10 @@ const data = reactive<Data>({
 });
 
 const junior = computed(() => data.course === '1' || data.course === '2');
-const isNomarksCouse = computed(() => data.course === '1' || data.course === '1М');
+const isNoMarksCourse = computed(() => data.course === '1' || data.course === '1М');
 
-const nomarks = ref(false);
-const nomarksHandler = (val: boolean) => {
+const noMarks = ref(false);
+const noMarksHandler = (val: boolean | null) => {
 	if (val) {
 		data.marks = [];
 		data.retake = false;
@@ -37,7 +36,7 @@ const allDef = computed(() => {
 		key => data[key as keyof Data] !== undefined
 	);
 	const pgas = !gasCondition.value || data.pgas !== undefined;
-	const marks = nomarks.value || data.marks.length;
+	const marks = noMarks.value || data.marks.length;
 	return every && pgas && marks;
 });
 
@@ -52,17 +51,17 @@ const stipend = computed(() => {
 		gssCondition && junior.value && data.marks.length && !data.marks.includes(3);
 
 	if (gasCondition.value) {
-		if (!data.marks.length) sum += Stipend.gas.miss;
-		else if (data.marks.includes(4) && data.marks.includes(5)) sum += Stipend.gas.with4and5;
-		else if (data.marks.includes(4)) sum += Stipend.gas.only4;
-		else if (data.marks.includes(5)) sum += Stipend.gas.only5;
+		if (!data.marks.length) sum += PAYMENTS.gas.miss;
+		else if (data.marks.includes(4) && data.marks.includes(5)) sum += PAYMENTS.gas.with4and5;
+		else if (data.marks.includes(4)) sum += PAYMENTS.gas.only4;
+		else if (data.marks.includes(5)) sum += PAYMENTS.gas.only5;
 	}
 
-	if (pgasCondition) sum += Stipend.pgas;
+	if (pgasCondition) sum += PAYMENTS.pgas;
 
-	if (gssCondition) sum += Stipend.gss;
+	if (gssCondition) sum += PAYMENTS.gss;
 
-	if (pgssCondition) sum += Stipend.pgss;
+	if (pgssCondition) sum += PAYMENTS.pgss;
 
 	if (data.member) sum *= 1 - TAX;
 
@@ -74,13 +73,13 @@ const formattedStipend = computed(() => {
 	const rest = Math.floor(stipend.value % 1000);
 	const float = Math.round((stipend.value % 1) * 100);
 
-	if (thousands) return `${thousands} ${lz(rest, 3)},${lz(float, 2)} ₽`;
-	return `${rest},${lz(float, 2)} ₽`;
+	if (thousands) return `${thousands} ${lz(rest, 3)},${lz(float)} ₽`;
+	return `${rest},${lz(float)} ₽`;
 });
 
 const updateCourseHandler = () => {
-	if (!isNomarksCouse.value) {
-		nomarks.value = false;
+	if (!isNoMarksCourse.value) {
+		noMarks.value = false;
 	}
 };
 
@@ -91,6 +90,8 @@ watch(gasCondition, val => {
 		data.pgas = false;
 	}
 });
+
+const courses = ['1', '2', '3', '4', '5', '6', '1М', '2М'];
 </script>
 
 <template>
@@ -103,34 +104,29 @@ watch(gasCondition, val => {
 					mandatory
 					@update:model-value="updateCourseHandler"
 				>
-					<v-btn value="1" style="height: 48px">1</v-btn>
-					<v-btn value="2" style="height: 48px">2</v-btn>
-					<v-btn value="3" style="height: 48px">3</v-btn>
-					<v-btn value="4" style="height: 48px">4</v-btn>
-					<v-btn value="5" style="height: 48px">5</v-btn>
-					<v-btn value="6" style="height: 48px">6</v-btn>
-					<v-btn value="1М" style="height: 48px">1М</v-btn>
-					<v-btn value="2М" style="height: 48px">2М</v-btn>
+					<v-btn v-for="course of courses" :key="course" :value="course" style="height: 48px">{{
+						course
+					}}</v-btn>
 				</v-btn-toggle>
 			</IrdomSection>
 
 			<IrdomSection title="Оценки за последнюю сессию">
-				<v-btn-toggle v-model="data.marks" multiple divided :disabled="nomarks">
+				<v-btn-toggle v-model="data.marks" multiple divided :disabled="noMarks">
 					<v-btn :value="3">3</v-btn>
 					<v-btn :value="4">4</v-btn>
 					<v-btn :value="5">5</v-btn>
 				</v-btn-toggle>
 				<v-checkbox
-					v-if="isNomarksCouse"
-					v-model="nomarks"
+					v-if="isNoMarksCourse"
+					v-model="noMarks"
 					label="Оценок нет"
 					hide-details="auto"
 					style="margin-bottom: -23px"
-					@update:model-value="nomarksHandler"
+					@update:model-value="noMarksHandler"
 				/>
 			</IrdomSection>
 
-			<IrdomSection v-if="!nomarks" title="Пересдачи за последнюю сессию">
+			<IrdomSection v-if="!noMarks" title="Пересдачи за последнюю сессию">
 				<v-btn-toggle v-model="data.retake" mandatory divided>
 					<v-btn :value="true">Были</v-btn>
 					<v-btn :value="false">Не были</v-btn>
@@ -162,7 +158,7 @@ watch(gasCondition, val => {
 			<div class="your">
 				<span>ИТОГО: </span>
 				<IrdomTooltip text="">
-					Получение этой суммы не гарантировано.<br />
+					Сумма может быть неточной.<br />
 					С вопросами обращайтесь в Профком.
 				</IrdomTooltip>
 			</div>

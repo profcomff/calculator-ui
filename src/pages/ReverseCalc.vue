@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
-import { Stipend, TAX } from '../constants/';
+import { PAYMENTS, TAX } from '../constants/';
+import { lz } from '../utils';
 
 interface Result {
 	sum: number;
@@ -30,9 +31,9 @@ const emptyResult: Result = {
 
 const screenWidth = window.innerWidth;
 
-const flattenStipend = (options: typeof Stipend): typeof convertedStipend => {
+const flattenStipend = (options: typeof PAYMENTS): typeof convertedStipend => {
 	const newOptions: typeof convertedStipend = Object.assign({}, convertedStipend);
-	let property: keyof typeof Stipend;
+	let property: keyof typeof PAYMENTS;
 	for (property in options) {
 		const value: number[] =
 			typeof options[property] === 'number'
@@ -98,7 +99,7 @@ const getSumAndTax = (options: Result[]): Result[] => {
 	return results;
 };
 
-const combinations: Array<Result> = getSumAndTax(getCombinations(flattenStipend(Stipend)));
+const combinations: Result[] = getSumAndTax(getCombinations(flattenStipend(PAYMENTS)));
 const inputSum = ref<string>('');
 
 function formatInput(input: string) {
@@ -130,8 +131,6 @@ const found = computed(() => {
 		return false;
 	}
 });
-
-const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
 const formattedStipend = (stipend: number): string => {
 	let thousands: number;
