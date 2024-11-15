@@ -33,7 +33,9 @@ const nomarksHandler = (val: boolean) => {
 };
 
 const allDef = computed(() => {
-	const every = ['course', 'member', 'retake', 'gss'].every(key => data[key as keyof Data] !== undefined);
+	const every = ['course', 'member', 'retake', 'gss'].every(
+		key => data[key as keyof Data] !== undefined
+	);
 	const pgas = !gasCondition.value || data.pgas !== undefined;
 	const marks = nomarks.value || data.marks.length;
 	return every && pgas && marks;
@@ -46,7 +48,8 @@ const stipend = computed(() => {
 
 	const pgasCondition = gasCondition.value && data.pgas === true;
 	const gssCondition = data.gss === true;
-	const pgssCondition = gssCondition && junior.value && data.marks.length && !data.marks.includes(3);
+	const pgssCondition =
+		gssCondition && junior.value && data.marks.length && !data.marks.includes(3);
 
 	if (gasCondition.value) {
 		if (!data.marks.length) sum += Stipend.gas.miss;
@@ -94,7 +97,12 @@ watch(gasCondition, val => {
 	<div class="container">
 		<div class="rounded calc">
 			<IrdomSection title="Курс обучения">
-				<v-btn-toggle v-model="data.course" class="course" mandatory @update:model-value="updateCourseHandler">
+				<v-btn-toggle
+					v-model="data.course"
+					class="course"
+					mandatory
+					@update:model-value="updateCourseHandler"
+				>
 					<v-btn value="1" style="height: 48px">1</v-btn>
 					<v-btn value="2" style="height: 48px">2</v-btn>
 					<v-btn value="3" style="height: 48px">3</v-btn>
@@ -119,7 +127,7 @@ watch(gasCondition, val => {
 					hide-details="auto"
 					style="margin-bottom: -23px"
 					@update:model-value="nomarksHandler"
-				></v-checkbox>
+				/>
 			</IrdomSection>
 
 			<IrdomSection v-if="!nomarks" title="Пересдачи за последнюю сессию">
@@ -169,7 +177,7 @@ watch(gasCondition, val => {
 	display: flex;
 	align-items: center;
 	font-size: 30px;
-	background: rgb(0, 1, 76);
+	background: rgb(0 1 76);
 	color: white;
 	border-radius: 999px;
 	padding: 0 16px;

@@ -12,7 +12,7 @@ interface Result {
 	tax: number;
 }
 
-let convertedStipend = {
+const convertedStipend = {
 	gas: [0],
 	pgas: [0],
 	gss: [0],
@@ -34,8 +34,10 @@ const flattenStipend = (options: typeof Stipend): typeof convertedStipend => {
 	const newOptions: typeof convertedStipend = Object.assign({}, convertedStipend);
 	let property: keyof typeof Stipend;
 	for (property in options) {
-		let value: number[] =
-			typeof options[property] === 'number' ? [options[property]] : Object.values(options[property]);
+		const value: number[] =
+			typeof options[property] === 'number'
+				? [options[property]]
+				: Object.values(options[property]);
 		value.push(0);
 		newOptions[property] = value;
 	}
@@ -112,13 +114,15 @@ function formatInput(input: string) {
 let result: Result = emptyResult;
 const recount = computed(() => {
 	const tempInput = inputSum.value.replace(',', '.');
-	result = combinations.find(o => o.sum <= Number(tempInput) + 1 && o.sum >= Number(tempInput) - 1) ?? emptyResult;
+	result =
+		combinations.find(o => o.sum <= Number(tempInput) + 1 && o.sum >= Number(tempInput) - 1) ??
+		emptyResult;
 	return result;
 });
 
 const found = computed(() => {
-	let foundResult = combinations.find(
-		o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1,
+	const foundResult = combinations.find(
+		o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1
 	);
 	if (foundResult) {
 		return true;
@@ -151,8 +155,12 @@ const formattedStipend = (stipend: number): string => {
 	<div class="container">
 		<div class="rounded calc">
 			<IrdomSection class="mb-0" title="Введите полученную сумму">
-				<v-text-field v-model="inputSum" label="Полученная сумма" :rules="[formatInput]"
-					@update:model-value="recount"></v-text-field>
+				<v-text-field
+					v-model="inputSum"
+					label="Полученная сумма"
+					:rules="[formatInput]"
+					@update:model-value="recount"
+				/>
 				<v-divider class="ma-0" />
 			</IrdomSection>
 			<div class="ma-0">
@@ -193,7 +201,7 @@ const formattedStipend = (stipend: number): string => {
 	text-align: left;
 	vertical-align: bottom;
 	font-size: 25px;
-	margin: 13px 0px 10px 0px;
+	margin: 13px 0 10px;
 }
 
 .sum-plus {
@@ -204,8 +212,8 @@ const formattedStipend = (stipend: number): string => {
 	background: green;
 	color: white;
 	border-radius: 999px;
-	margin: 10px 0px 10px 0px;
-	padding: 0px 30px;
+	margin: 10px 0;
+	padding: 0 30px;
 	min-width: max(54px, fit-content);
 	justify-content: center;
 }

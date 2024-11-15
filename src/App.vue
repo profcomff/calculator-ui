@@ -12,7 +12,13 @@ const onChangeTab = () => {
 <template>
 	<v-app>
 		<main class="main">
-			<v-tabs v-model="currentTab" bg-color="rgb(0, 1, 76)" color="white" grow @update:model-value="onChangeTab">
+			<v-tabs
+				v-model="currentTab"
+				bg-color="rgb(0, 1, 76)"
+				color="white"
+				grow
+				@update:model-value="onChangeTab"
+			>
 				<v-tab value="calc"> Рассчитать выплату </v-tab>
 				<v-tab value="reverse-calc"> Узнать составляющие выплаты </v-tab>
 			</v-tabs>
