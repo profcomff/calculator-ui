@@ -154,12 +154,7 @@ const formattedStipend = (stipend: number): string => {
 	<div class="container">
 		<div class="rounded calc">
 			<IrdomSection class="mb-0" title="Введите полученную сумму">
-				<v-text-field
-					v-model="inputSum"
-					label="Полученная сумма"
-					:rules="[formatInput]"
-					@update:model-value="recount"
-				/>
+				<v-text-field v-model="inputSum" label="Полученная сумма" :rules="[formatInput]" />
 				<v-divider class="ma-0" />
 			</IrdomSection>
 			<div class="ma-0">
