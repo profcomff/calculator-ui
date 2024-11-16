@@ -1,0 +1,10 @@
+{
+	"extends": ["stylelint-config-standard", "stylelint-config-recommended-vue"],
+	"rules": {
+		"function-disallowed-list": ["rgba", "hsla", "hsl"],
+		"color-function-notation": "modern",
+		"color-no-hex": null,
+		"selector-nested-pattern": "^&",
+		"selector-class-pattern": null
+	}
+}

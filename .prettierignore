@@ -1,0 +1,8 @@
+.github/
+deployment/
+dist/
+node_modules/
+pnpm-lock.yaml
+.vite
+package.json
+bun.lockb

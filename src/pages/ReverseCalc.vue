@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
-import { Stipend, TAX } from '../constants/';
+import { PAYMENTS, TAX } from '../constants/';
+import { lz } from '../utils';
 
 interface Result {
 	sum: number;
@@ -12,7 +13,7 @@ interface Result {
 	tax: number;
 }
 
-let convertedStipend = {
+const convertedStipend = {
 	gas: [0],
 	pgas: [0],
 	gss: [0],
@@ -30,12 +31,14 @@ const emptyResult: Result = {
 
 const screenWidth = window.innerWidth;
 
-const flattenStipend = (options: typeof Stipend): typeof convertedStipend => {
+const flattenStipend = (options: typeof PAYMENTS): typeof convertedStipend => {
 	const newOptions: typeof convertedStipend = Object.assign({}, convertedStipend);
-	let property: keyof typeof Stipend;
+	let property: keyof typeof PAYMENTS;
 	for (property in options) {
-		let value: number[] =
-			typeof options[property] === 'number' ? [options[property]] : Object.values(options[property]);
+		const value: number[] =
+			typeof options[property] === 'number'
+				? [options[property]]
+				: Object.values(options[property]);
 		value.push(0);
 		newOptions[property] = value;
 	}
@@ -96,7 +99,7 @@ const getSumAndTax = (options: Result[]): Result[] => {
 	return results;
 };
 
-const combinations: Array<Result> = getSumAndTax(getCombinations(flattenStipend(Stipend)));
+const combinations: Result[] = getSumAndTax(getCombinations(flattenStipend(PAYMENTS)));
 const inputSum = ref<string>('');
 
 function formatInput(input: string) {
@@ -112,13 +115,15 @@ function formatInput(input: string) {
 let result: Result = emptyResult;
 const recount = computed(() => {
 	const tempInput = inputSum.value.replace(',', '.');
-	result = combinations.find(o => o.sum <= Number(tempInput) + 1 && o.sum >= Number(tempInput) - 1) ?? emptyResult;
+	result =
+		combinations.find(o => o.sum <= Number(tempInput) + 1 && o.sum >= Number(tempInput) - 1) ??
+		emptyResult;
 	return result;
 });
 
 const found = computed(() => {
-	let foundResult = combinations.find(
-		o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1,
+	const foundResult = combinations.find(
+		o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1
 	);
 	if (foundResult) {
 		return true;
@@ -126,8 +131,6 @@ const found = computed(() => {
 		return false;
 	}
 });
-
-const lz = (number: number, digits: number) => `${'0'.repeat(digits)}${number}`.slice(-digits);
 
 const formattedStipend = (stipend: number): string => {
 	let thousands: number;
@@ -151,8 +154,12 @@ const formattedStipend = (stipend: number): string => {
 	<div class="container">
 		<div class="rounded calc">
 			<IrdomSection class="mb-0" title="Введите полученную сумму">
-				<v-text-field v-model="inputSum" label="Полученная сумма" :rules="[formatInput]"
-					@update:model-value="recount"></v-text-field>
+				<v-text-field
+					v-model="inputSum"
+					label="Полученная сумма"
+					:rules="[formatInput]"
+					@update:model-value="recount"
+				/>
 				<v-divider class="ma-0" />
 			</IrdomSection>
 			<div class="ma-0">
@@ -193,7 +200,7 @@ const formattedStipend = (stipend: number): string => {
 	text-align: left;
 	vertical-align: bottom;
 	font-size: 25px;
-	margin: 13px 0px 10px 0px;
+	margin: 13px 0 10px;
 }
 
 .sum-plus {
@@ -204,8 +211,8 @@ const formattedStipend = (stipend: number): string => {
 	background: green;
 	color: white;
 	border-radius: 999px;
-	margin: 10px 0px 10px 0px;
-	padding: 0px 30px;
+	margin: 10px 0;
+	padding: 0 30px;
 	min-width: max(54px, fit-content);
 	justify-content: center;
 }

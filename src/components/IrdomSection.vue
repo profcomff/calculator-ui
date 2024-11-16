@@ -7,7 +7,7 @@ defineProps<{
 <template>
 	<section class="section">
 		<h2 class="h2">{{ title }}</h2>
-		<slot></slot>
+		<slot />
 	</section>
 </template>
 

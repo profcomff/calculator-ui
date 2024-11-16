@@ -1,4 +1,4 @@
-export const Stipend = {
+export const PAYMENTS = {
 	gas: {
 		only4: 3091,
 		miss: 3091,

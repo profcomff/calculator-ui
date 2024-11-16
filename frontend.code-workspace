@@ -1,8 +1,8 @@
 {
 	"folders": [
 		{
-			"path": "."
-		}
+			"path": ".",
+		},
 	],
 	"extensions": {
 		"recommendations": [
@@ -72,7 +72,7 @@
 		"css.validate": false,
 		"git.openRepositoryInParentFolders": "always",
 		"[vue]": {
-        	"editor.defaultFormatter": "esbenp.prettier-vscode"
-    	},
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+		},
 	},
 }
