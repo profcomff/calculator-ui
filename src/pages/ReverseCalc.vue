@@ -3,9 +3,9 @@ import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { PAYMENTS, TAX, TipFromSum } from '../constants/';
 //import SvgIcon from '@jamescoyle/vue-icon';
-//import { mdiInformationOutline } from '@mdi/js';
-import { VTooltip, VBtn, VIcon } from 'vuetify/components';
-import '@mdi/font/css/materialdesignicons.css';
+import { mdiInformationOutline } from '@mdi/js';
+import { VTooltip, VBtn} from 'vuetify/components';
+//import '@mdi/font/css/materialdesignicons.css';
 import { lz } from '../utils';
 
 interface Result {
@@ -152,7 +152,7 @@ const formattedStipend = (stipend: number): string => {
 	if (thousands) return `${thousands} ${lz(rest, 3)},${lz(float, 2)} ₽`;
 	return `${rest},${lz(float, 2)} ₽`;
 };
-//const infoIconPath = mdiInformationOutline;
+const infoIconPath = mdiInformationOutline;
 </script>
 
 <template>
@@ -169,8 +169,7 @@ const formattedStipend = (stipend: number): string => {
 					<v-tooltip :text="TipFromSum['gas'][recount['gas']]"> 
 						<template #activator="{ props }">
 							<v-btn icon variant="tonal" v-bind="props">
-								<!-- <svg-icon type="mdi" :path="infoIconPath"/> -->
-								<v-icon>mdi-information-symbol</v-icon>
+								<svg-icon type="mdi" :path="infoIconPath" />
 							</v-btn>
 						</template>
 					</v-tooltip>
@@ -181,8 +180,7 @@ const formattedStipend = (stipend: number): string => {
 					<v-tooltip :text="TipFromSum['pgas'][recount['pgas']]"> 
 						<template #activator="{ props }">
 							<v-btn icon variant="tonal" v-bind="props">
-								<!-- <svg-icon type="mdi" :path="infoIconPath"/> -->
-								<v-icon>mdi-information-symbol</v-icon>
+								<svg-icon type="mdi" :path="infoIconPath"/> 
 							</v-btn>
 						</template>
 					</v-tooltip>
@@ -193,8 +191,7 @@ const formattedStipend = (stipend: number): string => {
 					<v-tooltip :text="TipFromSum['gss'][recount['gss']]"> 
 						<template #activator="{ props }">
 							<v-btn icon variant="tonal" v-bind="props">
-								<!--<svg-icon type="mdi" :path="infoIconPath"/>-->
-								<v-icon>mdi-information-symbol</v-icon>
+								<svg-icon type="mdi" :path="infoIconPath"/>
 							</v-btn>
 						</template>
 					</v-tooltip>
@@ -205,8 +202,7 @@ const formattedStipend = (stipend: number): string => {
 					<v-tooltip :text="TipFromSum['pgss'][recount['pgss']]"> 
 						<template #activator="{ props }">
 							<v-btn icon variant="tonal" v-bind="props">
-								<!-- <svg-icon type="mdi" :path="infoIconPath"/> -->
-								<v-icon>mdi-information-symbol</v-icon>
+								<svg-icon type="mdi" :path="infoIconPath"/> 
 							</v-btn>
 						</template>
 					</v-tooltip>
