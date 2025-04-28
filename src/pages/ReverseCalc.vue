@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { PAYMENTS, TAX, TipFromSum } from '../constants/';
-// @ts-ignore
+// @ts-expect-error
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiInformationOutline } from '@mdi/js';
 import { VTooltip, VBtn } from 'vuetify/components';
