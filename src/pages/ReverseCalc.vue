@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { PAYMENTS, TAX, TipFromSum } from '../constants/';
-//import SvgIcon from '@jamescoyle/vue-icon';
+import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiInformationOutline } from '@mdi/js';
 import { VTooltip, VBtn} from 'vuetify/components';
 //import '@mdi/font/css/materialdesignicons.css';
@@ -153,6 +153,7 @@ const formattedStipend = (stipend: number): string => {
 	return `${rest},${lz(float, 2)} ₽`;
 };
 const infoIconPath = mdiInformationOutline;
+
 </script>
 
 <template>
@@ -165,47 +166,55 @@ const infoIconPath = mdiInformationOutline;
 			<div class="ma-0">
 				<div class="d-flex justify-space-between">
 					<div class="pay">ГАС</div>
-					<div id="gas" class="sum-plus bg-primary">{{ formattedStipend(recount['gas']) }}</div>
-					<v-tooltip :text="TipFromSum['gas'][recount['gas']]"> 
-						<template #activator="{ props }">
-							<v-btn icon variant="tonal" v-bind="props">
-								<svg-icon type="mdi" :path="infoIconPath" />
-							</v-btn>
-						</template>
-					</v-tooltip>
+					<div class="d-flex">
+						<div id="gas" class="sum-plus bg-primary">{{ formattedStipend(recount['gas']) }}</div>
+						<v-tooltip :text="TipFromSum['gas'][recount['gas']]"> 
+							<template #activator="{ props }">
+								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
+									<svg-icon type="mdi" :path="infoIconPath" />
+								</v-btn>
+							</template>
+						</v-tooltip>
+					</div>	
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ПГАС</v-sheet>
-					<div id="pgas" class="sum-plus bg-primary">{{ formattedStipend(recount['pgas']) }}</div>
-					<v-tooltip :text="TipFromSum['pgas'][recount['pgas']]"> 
-						<template #activator="{ props }">
-							<v-btn icon variant="tonal" v-bind="props">
-								<svg-icon type="mdi" :path="infoIconPath"/> 
-							</v-btn>
-						</template>
-					</v-tooltip>
+					<div class="d-flex">
+						<div id="pgas" class="sum-plus bg-primary">{{ formattedStipend(recount['pgas']) }}</div>
+						<v-tooltip :text="TipFromSum['pgas'][recount['pgas']]"> 
+							<template #activator="{ props }">
+								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
+									<svg-icon type="mdi" :path="infoIconPath"/> 
+								</v-btn>
+							</template>
+						</v-tooltip>
+					</div>	
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ГСС</v-sheet>
-					<div id="gss" class="sum-plus bg-primary">{{ formattedStipend(recount['gss']) }}</div>
-					<v-tooltip :text="TipFromSum['gss'][recount['gss']]"> 
-						<template #activator="{ props }">
-							<v-btn icon variant="tonal" v-bind="props">
-								<svg-icon type="mdi" :path="infoIconPath"/>
-							</v-btn>
-						</template>
-					</v-tooltip>
+					<div class="d-flex">
+						<div id="gss" class="sum-plus bg-primary">{{ formattedStipend(recount['gss']) }}</div>
+						<v-tooltip :text="TipFromSum['gss'][recount['gss']]"> 
+							<template #activator="{ props }">
+								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
+									<svg-icon type="mdi" :path="infoIconPath"/>
+								</v-btn>
+							</template>
+						</v-tooltip>
+				    </div>		
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">ПГСС</v-sheet>
-					<div id="pgss" class="sum-plus bg-primary">{{ formattedStipend(recount['pgss']) }}</div>
-					<v-tooltip :text="TipFromSum['pgss'][recount['pgss']]"> 
-						<template #activator="{ props }">
-							<v-btn icon variant="tonal" v-bind="props">
-								<svg-icon type="mdi" :path="infoIconPath"/> 
-							</v-btn>
-						</template>
-					</v-tooltip>
+					<div class="d-flex">
+						<div id="pgss" class="sum-plus bg-primary">{{ formattedStipend(recount['pgss']) }}</div>
+						<v-tooltip :text="TipFromSum['pgss'][recount['pgss']]"> 
+							<template #activator="{ props }">
+								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
+									<svg-icon type="mdi" :path="infoIconPath"/> 
+								</v-btn>
+							</template>
+						</v-tooltip>
+					</div>	
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">Профвзнос</v-sheet>
@@ -239,7 +248,7 @@ const infoIconPath = mdiInformationOutline;
 	background: green;
 	color: white;
 	border-radius: 999px;
-	margin: 10px 0;
+	margin: 10px 10px;
 	padding: 0 30px;
 	min-width: max(54px, fit-content);
 	justify-content: center;
