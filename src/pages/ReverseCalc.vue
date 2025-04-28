@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { PAYMENTS, TAX, TipFromSum } from '../constants/';
-// @ts-expect-error
+// @ts-expect-error: This is necessary because the operation may return an unexpected type.
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiInformationOutline } from '@mdi/js';
 import { VTooltip, VBtn } from 'vuetify/components';
