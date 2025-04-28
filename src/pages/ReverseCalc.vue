@@ -2,10 +2,10 @@
 import { computed, ref } from 'vue';
 import IrdomSection from '../components/IrdomSection.vue';
 import { PAYMENTS, TAX, TipFromSum } from '../constants/';
+// @ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiInformationOutline } from '@mdi/js';
 import { VTooltip, VBtn} from 'vuetify/components';
-//import '@mdi/font/css/materialdesignicons.css';
 import { lz } from '../utils';
 
 interface Result {
