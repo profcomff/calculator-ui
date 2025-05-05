@@ -167,7 +167,9 @@ const infoIconPath = mdiInformationOutline;
 					<div class="pay">ГАС</div>
 					<div class="d-flex">
 						<div id="gas" class="sum-plus bg-primary">{{ formattedStipend(recount['gas']) }}</div>
-						<v-tooltip :text="TipFromSum['gas'][recount['gas']]">
+						<v-tooltip :text="TipFromSum['gas'][recount['gas']]"
+						:disabled="!TipFromSum['gas'][recount['gas']]"
+						>
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
 									<svg-icon type="mdi" :path="infoIconPath" />
@@ -180,7 +182,9 @@ const infoIconPath = mdiInformationOutline;
 					<v-sheet class="pay">ПГАС</v-sheet>
 					<div class="d-flex">
 						<div id="pgas" class="sum-plus bg-primary">{{ formattedStipend(recount['pgas']) }}</div>
-						<v-tooltip :text="TipFromSum['pgas'][recount['pgas']]">
+						<v-tooltip :text="TipFromSum['pgas'][recount['pgas']]"
+						:disabled="!TipFromSum['pgas'][recount['pgas']]"
+						>
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
 									<svg-icon type="mdi" :path="infoIconPath" />
@@ -193,7 +197,8 @@ const infoIconPath = mdiInformationOutline;
 					<v-sheet class="pay">ГСС</v-sheet>
 					<div class="d-flex">
 						<div id="gss" class="sum-plus bg-primary">{{ formattedStipend(recount['gss']) }}</div>
-						<v-tooltip :text="TipFromSum['gss'][recount['gss']]">
+						<v-tooltip :text="TipFromSum['gss'][recount['gss']]"
+						:disabled="!TipFromSum['gss'][recount['gss']]">
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
 									<svg-icon type="mdi" :path="infoIconPath" />
@@ -206,7 +211,9 @@ const infoIconPath = mdiInformationOutline;
 					<v-sheet class="pay">ПГСС</v-sheet>
 					<div class="d-flex">
 						<div id="pgss" class="sum-plus bg-primary">{{ formattedStipend(recount['pgss']) }}</div>
-						<v-tooltip :text="TipFromSum['pgss'][recount['pgss']]">
+						<v-tooltip :text="TipFromSum['pgss'][recount['pgss']]"
+						:disabled="!TipFromSum['pgss'][recount['pgss']]"
+					    >
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
 									<svg-icon type="mdi" :path="infoIconPath" />
@@ -217,7 +224,17 @@ const infoIconPath = mdiInformationOutline;
 				</div>
 				<div class="d-flex justify-space-between">
 					<v-sheet class="pay">Профвзнос</v-sheet>
-					<div id="tax" class="sum-plus bg-primary">{{ formattedStipend(recount['tax']) }}</div>
+					<div class="d-flex">
+						<div id="tax" class="sum-plus bg-primary">{{ formattedStipend(recount['tax']) }}</div>
+						<v-tooltip :text="TipFromSum['proffee']" 
+						:disabled="!TipFromSum['proffee'] || recount['tax'] >= 0">
+								<template #activator="{ props }">
+									<v-btn icon variant="tonal" v-bind="props" class="mt-3">
+										<svg-icon type="mdi" :path="infoIconPath" />
+									</v-btn>
+								</template>
+							</v-tooltip>
+					</div>		
 				</div>
 			</div>
 			<v-divider />
@@ -247,7 +264,7 @@ const infoIconPath = mdiInformationOutline;
 	background: green;
 	color: white;
 	border-radius: 999px;
-	margin: 10px 10px;
+	margin: 10px;
 	padding: 0 30px;
 	min-width: max(54px, fit-content);
 	justify-content: center;
