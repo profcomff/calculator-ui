@@ -170,6 +170,9 @@ const infoIconPath = mdiInformationOutline;
 						<v-tooltip
 							:text="TipFromSum['gas'][recount['gas']]"
 							:disabled="!TipFromSum['gas'][recount['gas']]"
+							open-on-click
+							open-on-hover
+							open-on-focus
 						>
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
@@ -186,6 +189,9 @@ const infoIconPath = mdiInformationOutline;
 						<v-tooltip
 							:text="TipFromSum['pgas'][recount['pgas']]"
 							:disabled="!TipFromSum['pgas'][recount['pgas']]"
+							open-on-click
+							open-on-hover
+							open-on-focus
 						>
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
@@ -202,6 +208,9 @@ const infoIconPath = mdiInformationOutline;
 						<v-tooltip
 							:text="TipFromSum['gss'][recount['gss']]"
 							:disabled="!TipFromSum['gss'][recount['gss']]"
+							open-on-click
+							open-on-hover
+							open-on-focus
 						>
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
@@ -218,6 +227,9 @@ const infoIconPath = mdiInformationOutline;
 						<v-tooltip
 							:text="TipFromSum['pgss'][recount['pgss']]"
 							:disabled="!TipFromSum['pgss'][recount['pgss']]"
+							open-on-click
+							open-on-hover
+							open-on-focus
 						>
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
@@ -234,6 +246,9 @@ const infoIconPath = mdiInformationOutline;
 						<v-tooltip
 							:text="TipFromSum['proffee']"
 							:disabled="!TipFromSum['proffee'] || recount['tax'] >= 0"
+							open-on-click
+							open-on-hover
+							open-on-focus
 						>
 							<template #activator="{ props }">
 								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
