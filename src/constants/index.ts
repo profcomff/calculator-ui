@@ -1,12 +1,12 @@
 export const PAYMENTS = {
 	gas: {
-		only4: 3091,
-		miss: 3091,
-		with4and5: 3555,
-		only5: 3865,
+		only4: 3326,
+		miss: 3326,
+		with4and5: 3825,
+		only5: 4159,
 	},
 	pgas: 14466,
-	gss: 4638,
+	gss: 4990,
 	pgss: 15595,
 };
 
