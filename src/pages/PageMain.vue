@@ -162,7 +162,7 @@ const courses = ['1', '2', '3', '4', '5', '6', '1М', '2М'];
 					С вопросами обращайтесь в Профком.
 				</IrdomTooltip>
 			</div>
-			<div class="stipend">{{ allDef ? formattedStipend : '?' }}</div>
+			<div class="stipend bg-primary">{{ allDef ? formattedStipend : '?' }}</div>
 		</div>
 	</div>
 </template>
@@ -173,7 +173,6 @@ const courses = ['1', '2', '3', '4', '5', '6', '1М', '2М'];
 	display: flex;
 	align-items: center;
 	font-size: 30px;
-	background: rgb(0 1 76);
 	color: white;
 	border-radius: 999px;
 	padding: 0 16px;

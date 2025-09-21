@@ -4,7 +4,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 const profcomffLight = {
 	dark: false,
 	colors: {
-		primary: 'rgb(0, 1, 76)',
+		primary: 'rgba(71, 28, 120)',
 		'on-primary': 'rgb(255, 255, 255)',
 
 		secondary: 'rgb(255, 139, 0)',
@@ -31,11 +31,11 @@ export const vuetify = createVuetify({
 	},
 	defaults: {
 		VBtnToggle: {
-			color: 'rgb(0, 1, 76)',
+			color: 'rgba(71, 28, 120)',
 			elevation: 1,
 		},
 		VCheckbox: {
-			color: 'rgb(0, 1, 76)',
+			color: 'rgba(71, 28, 120)',
 		},
 	},
 	theme: {
