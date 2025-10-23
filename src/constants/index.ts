@@ -5,7 +5,7 @@ export const PAYMENTS = {
 		with4and5: 3825,
 		only5: 4159,
 	},
-	pgas: 14466,
+	pgas: 15394,
 	gss: 4990,
 	pgss: 15595,
 };
