@@ -14,7 +14,7 @@ const onChangeTab = () => {
 		<main class="main">
 			<v-tabs
 				v-model="currentTab"
-				bg-color="primary"
+				bg-color="rgb(0, 1, 76)"
 				color="white"
 				grow
 				@update:model-value="onChangeTab"
