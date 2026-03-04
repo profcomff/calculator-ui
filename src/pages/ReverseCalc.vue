@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useDisplay } from 'vuetify';
+import { mdiInformationOutline } from '@mdi/js';
 import IrdomSection from '../components/IrdomSection.vue';
 import { PAYMENTS, TAX, TipFromSum } from '../constants/';
-// @ts-expect-error: This is necessary because the operation may return an unexpected type.
-import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiInformationOutline } from '@mdi/js';
-import { VTooltip, VBtn } from 'vuetify/components';
 import { lz } from '../utils';
 
 interface Result {
@@ -33,7 +31,8 @@ const emptyResult: Result = {
 	tax: 0,
 };
 
-const screenWidth = window.innerWidth;
+const { width } = useDisplay();
+const isNarrow = computed(() => width.value < 800);
 
 const flattenStipend = (options: typeof PAYMENTS): typeof convertedStipend => {
 	const newOptions: typeof convertedStipend = Object.assign({}, convertedStipend);
@@ -116,25 +115,26 @@ function formatInput(input: string) {
 	}
 }
 
-let result: Result = emptyResult;
-const recount = computed(() => {
-	const tempInput = inputSum.value.replace(',', '.');
-	result =
-		combinations.find(o => o.sum <= Number(tempInput) + 1 && o.sum >= Number(tempInput) - 1) ??
-		emptyResult;
-	return result;
+const parsedSum = computed(() => {
+	const s = inputSum.value.trim().replace(',', '.');
+	if (!s) return null;
+	const n = Number(s);
+	return Number.isFinite(n) ? n : null;
 });
 
 const found = computed(() => {
-	const foundResult = combinations.find(
-		o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1
-	);
-	if (foundResult) {
-		return true;
-	} else {
-		return false;
-	}
+	const target = parsedSum.value;
+	if (target === null) return false;
+	return combinations.some(o => Math.abs(o.sum - target) <= 1);
 });
+
+const recount = computed(() => {
+	const target = parsedSum.value;
+	if (target === null) return emptyResult;
+	return combinations.find(o => Math.abs(o.sum - target) <= 1) ?? emptyResult;
+});
+
+const hasInput = computed(() => inputSum.value.trim().length > 0);
 
 const formattedStipend = (stipend: number): string => {
 	let thousands: number;
@@ -152,7 +152,15 @@ const formattedStipend = (stipend: number): string => {
 	if (thousands) return `${thousands} ${lz(rest, 3)},${lz(float, 2)} ₽`;
 	return `${rest},${lz(float, 2)} ₽`;
 };
-const infoIconPath = mdiInformationOutline;
+
+type StipendField = 'gas' | 'pgas' | 'gss' | 'pgss';
+
+const getTooltipText = (field: StipendField): string => {
+	if (!hasInput.value || !found.value) return '';
+	const value = recount.value[field];
+	const tips = TipFromSum[field] as Record<number, string>;
+	return tips[value] ?? '';
+};
 </script>
 
 <template>
@@ -162,108 +170,165 @@ const infoIconPath = mdiInformationOutline;
 				<v-text-field v-model="inputSum" label="Полученная сумма" :rules="[formatInput]" />
 				<v-divider class="ma-0" />
 			</IrdomSection>
+
 			<div class="ma-0">
-				<div class="d-flex justify-space-between">
+				<!-- ГАС -->
+				<div class="d-flex justify-space-between align-center">
 					<div class="pay">ГАС</div>
-					<div class="d-flex">
+					<div class="right-group">
 						<div id="gas" class="sum-plus bg-primary">{{ formattedStipend(recount['gas']) }}</div>
-						<v-tooltip
-							:text="TipFromSum['gas'][recount['gas']]"
-							:disabled="!TipFromSum['gas'][recount['gas']]"
-							open-on-click
-							open-on-hover
-							open-on-focus
-						>
-							<template #activator="{ props }">
-								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
-									<svg-icon type="mdi" :path="infoIconPath" />
-								</v-btn>
-							</template>
-						</v-tooltip>
+						<span v-show="hasInput && found && getTooltipText('gas')">
+							<v-tooltip :text="getTooltipText('gas')" location="end" content-class="tooltip-large">
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
 					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">ПГАС</v-sheet>
-					<div class="d-flex">
+
+				<!-- ПГАС -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">ПГАС</div>
+					<div class="right-group">
 						<div id="pgas" class="sum-plus bg-primary">{{ formattedStipend(recount['pgas']) }}</div>
-						<v-tooltip
-							:text="TipFromSum['pgas'][recount['pgas']]"
-							:disabled="!TipFromSum['pgas'][recount['pgas']]"
-							open-on-click
-							open-on-hover
-							open-on-focus
-						>
-							<template #activator="{ props }">
-								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
-									<svg-icon type="mdi" :path="infoIconPath" />
-								</v-btn>
-							</template>
-						</v-tooltip>
+						<span v-show="getTooltipText('pgas')">
+							<v-tooltip
+								:text="getTooltipText('pgas')"
+								location="end"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
 					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">ГСС</v-sheet>
-					<div class="d-flex">
+
+				<!-- ГСС -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">ГСС</div>
+					<div class="right-group">
 						<div id="gss" class="sum-plus bg-primary">{{ formattedStipend(recount['gss']) }}</div>
-						<v-tooltip
-							:text="TipFromSum['gss'][recount['gss']]"
-							:disabled="!TipFromSum['gss'][recount['gss']]"
-							open-on-click
-							open-on-hover
-							open-on-focus
-						>
-							<template #activator="{ props }">
-								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
-									<svg-icon type="mdi" :path="infoIconPath" />
-								</v-btn>
-							</template>
-						</v-tooltip>
+						<span v-show="hasInput && found && getTooltipText('gss')">
+							<v-tooltip
+								:text="getTooltipText('gss')"
+								location="start"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
 					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">ПГСС</v-sheet>
-					<div class="d-flex">
+
+				<!-- ПГСС -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">ПГСС</div>
+					<div class="right-group">
 						<div id="pgss" class="sum-plus bg-primary">{{ formattedStipend(recount['pgss']) }}</div>
-						<v-tooltip
-							:text="TipFromSum['pgss'][recount['pgss']]"
-							:disabled="!TipFromSum['pgss'][recount['pgss']]"
-							open-on-click
-							open-on-hover
-							open-on-focus
-						>
-							<template #activator="{ props }">
-								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
-									<svg-icon type="mdi" :path="infoIconPath" />
-								</v-btn>
-							</template>
-						</v-tooltip>
+						<span v-show="hasInput && found && getTooltipText('pgss')">
+							<v-tooltip
+								:text="getTooltipText('pgss')"
+								location="start"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
 					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">Профвзнос</v-sheet>
-					<div class="d-flex">
+
+				<!-- Профвзнос -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">Профвзнос</div>
+					<div class="right-group">
 						<div id="tax" class="sum-plus bg-primary">{{ formattedStipend(recount['tax']) }}</div>
-						<v-tooltip
-							:text="TipFromSum['proffee']"
-							:disabled="!TipFromSum['proffee'] || recount['tax'] >= 0"
-							open-on-click
-							open-on-hover
-							open-on-focus
-						>
-							<template #activator="{ props }">
-								<v-btn icon variant="tonal" v-bind="props" class="mt-3">
-									<svg-icon type="mdi" :path="infoIconPath" />
-								</v-btn>
-							</template>
-						</v-tooltip>
+						<span v-show="hasInput && found && recount['tax'] !== 0">
+							<v-tooltip
+								:text="TipFromSum['proffee']"
+								location="start"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
 					</div>
 				</div>
 			</div>
+
 			<v-divider />
+
+			<!-- Итоговая строка -->
 			<div class="your d-flex justify-space-between">
 				<div class="text-h4">Сумма:</div>
-				<div class="stipend bg-secondary" :class="screenWidth < 800 ? 'text-h5' : 'text-h4'">
-					{{ found ? formattedStipend(recount['sum']) : 'Не найдено' }}
+				<div class="right-group">
+					<div
+						class="stipend"
+						:class="[found ? 'bg-primary' : 'bg-secondary', isNarrow ? 'text-h5' : 'text-h4']"
+					>
+						{{ found ? formattedStipend(recount['sum']) : hasInput ? 'Не найдено' : '0,00 ₽' }}
+					</div>
+					<span v-show="hasInput && !found">
+						<v-tooltip
+							text="Не найден такой вариант суммы"
+							location="start"
+							content-class="tooltip-large"
+						>
+							<template #activator="{ props }">
+								<v-btn
+									v-bind="props"
+									:icon="mdiInformationOutline"
+									variant="tonal"
+									size="x-small"
+									color="grey"
+									style="font-size: medium"
+								/>
+							</template>
+						</v-tooltip>
+					</span>
 				</div>
 			</div>
 		</div>
@@ -278,15 +343,20 @@ const infoIconPath = mdiInformationOutline;
 	margin: 13px 0 10px;
 }
 
+.right-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
 .sum-plus {
 	height: 54px;
 	display: flex;
 	align-items: center;
 	font-size: 20px;
-	background: green;
 	color: white;
 	border-radius: 999px;
-	margin: 10px;
+	margin: 10px 0;
 	padding: 0 30px;
 	min-width: max(54px, fit-content);
 	justify-content: center;
@@ -324,5 +394,11 @@ const infoIconPath = mdiInformationOutline;
 	overflow-y: auto;
 	height: 100%;
 	padding: 24px 24px 112px;
+}
+</style>
+
+<style>
+.tooltip-large {
+	font-size: 1rem !important;
 }
 </style>
