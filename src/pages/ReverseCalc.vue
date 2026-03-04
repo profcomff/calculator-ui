@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useDisplay } from 'vuetify';
+import { mdiInformationOutline } from '@mdi/js';
 import IrdomSection from '../components/IrdomSection.vue';
-import { PAYMENTS, TAX } from '../constants/';
+import { PAYMENTS, TAX, TipFromSum } from '../constants/';
 import { lz } from '../utils';
 
 interface Result {
@@ -29,7 +31,8 @@ const emptyResult: Result = {
 	tax: 0,
 };
 
-const screenWidth = window.innerWidth;
+const { width } = useDisplay();
+const isNarrow = computed(() => width.value < 800);
 
 const flattenStipend = (options: typeof PAYMENTS): typeof convertedStipend => {
 	const newOptions: typeof convertedStipend = Object.assign({}, convertedStipend);
@@ -112,25 +115,26 @@ function formatInput(input: string) {
 	}
 }
 
-let result: Result = emptyResult;
-const recount = computed(() => {
-	const tempInput = inputSum.value.replace(',', '.');
-	result =
-		combinations.find(o => o.sum <= Number(tempInput) + 1 && o.sum >= Number(tempInput) - 1) ??
-		emptyResult;
-	return result;
+const parsedSum = computed(() => {
+	const s = inputSum.value.trim().replace(',', '.');
+	if (!s) return null;
+	const n = Number(s);
+	return Number.isFinite(n) ? n : null;
 });
 
 const found = computed(() => {
-	const foundResult = combinations.find(
-		o => o.sum <= Number(inputSum.value) + 1 && o.sum >= Number(inputSum.value) - 1
-	);
-	if (foundResult) {
-		return true;
-	} else {
-		return false;
-	}
+	const target = parsedSum.value;
+	if (target === null) return false;
+	return combinations.some(o => Math.abs(o.sum - target) <= 1);
 });
+
+const recount = computed(() => {
+	const target = parsedSum.value;
+	if (target === null) return emptyResult;
+	return combinations.find(o => Math.abs(o.sum - target) <= 1) ?? emptyResult;
+});
+
+const hasInput = computed(() => inputSum.value.trim().length > 0);
 
 const formattedStipend = (stipend: number): string => {
 	let thousands: number;
@@ -148,6 +152,15 @@ const formattedStipend = (stipend: number): string => {
 	if (thousands) return `${thousands} ${lz(rest, 3)},${lz(float, 2)} ₽`;
 	return `${rest},${lz(float, 2)} ₽`;
 };
+
+type StipendField = 'gas' | 'pgas' | 'gss' | 'pgss';
+
+const getTooltipText = (field: StipendField): string => {
+	if (!hasInput.value || !found.value) return '';
+	const value = recount.value[field];
+	const tips = TipFromSum[field] as Record<number, string>;
+	return tips[value] ?? '';
+};
 </script>
 
 <template>
@@ -157,33 +170,165 @@ const formattedStipend = (stipend: number): string => {
 				<v-text-field v-model="inputSum" label="Полученная сумма" :rules="[formatInput]" />
 				<v-divider class="ma-0" />
 			</IrdomSection>
+
 			<div class="ma-0">
-				<div class="d-flex justify-space-between">
+				<!-- ГАС -->
+				<div class="d-flex justify-space-between align-center">
 					<div class="pay">ГАС</div>
-					<div id="gas" class="sum-plus bg-primary">{{ formattedStipend(recount['gas']) }}</div>
+					<div class="right-group">
+						<div id="gas" class="sum-plus bg-primary">{{ formattedStipend(recount['gas']) }}</div>
+						<span v-show="hasInput && found && getTooltipText('gas')">
+							<v-tooltip :text="getTooltipText('gas')" location="end" content-class="tooltip-large">
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
+					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">ПГАС</v-sheet>
-					<div id="pgas" class="sum-plus bg-primary">{{ formattedStipend(recount['pgas']) }}</div>
+
+				<!-- ПГАС -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">ПГАС</div>
+					<div class="right-group">
+						<div id="pgas" class="sum-plus bg-primary">{{ formattedStipend(recount['pgas']) }}</div>
+						<span v-show="getTooltipText('pgas')">
+							<v-tooltip
+								:text="getTooltipText('pgas')"
+								location="end"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
+					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">ГСС</v-sheet>
-					<div id="gss" class="sum-plus bg-primary">{{ formattedStipend(recount['gss']) }}</div>
+
+				<!-- ГСС -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">ГСС</div>
+					<div class="right-group">
+						<div id="gss" class="sum-plus bg-primary">{{ formattedStipend(recount['gss']) }}</div>
+						<span v-show="hasInput && found && getTooltipText('gss')">
+							<v-tooltip
+								:text="getTooltipText('gss')"
+								location="start"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
+					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">ПГСС</v-sheet>
-					<div id="pgss" class="sum-plus bg-primary">{{ formattedStipend(recount['pgss']) }}</div>
+
+				<!-- ПГСС -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">ПГСС</div>
+					<div class="right-group">
+						<div id="pgss" class="sum-plus bg-primary">{{ formattedStipend(recount['pgss']) }}</div>
+						<span v-show="hasInput && found && getTooltipText('pgss')">
+							<v-tooltip
+								:text="getTooltipText('pgss')"
+								location="start"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
+					</div>
 				</div>
-				<div class="d-flex justify-space-between">
-					<v-sheet class="pay">Профвзнос</v-sheet>
-					<div id="tax" class="sum-plus bg-primary">{{ formattedStipend(recount['tax']) }}</div>
+
+				<!-- Профвзнос -->
+				<div class="d-flex justify-space-between align-center">
+					<div class="pay">Профвзнос</div>
+					<div class="right-group">
+						<div id="tax" class="sum-plus bg-primary">{{ formattedStipend(recount['tax']) }}</div>
+						<span v-show="hasInput && found && recount['tax'] !== 0">
+							<v-tooltip
+								:text="TipFromSum['proffee']"
+								location="start"
+								content-class="tooltip-large"
+							>
+								<template #activator="{ props }">
+									<v-btn
+										v-bind="props"
+										:icon="mdiInformationOutline"
+										variant="tonal"
+										size="x-small"
+										color="grey"
+										style="font-size: medium"
+									/>
+								</template>
+							</v-tooltip>
+						</span>
+					</div>
 				</div>
 			</div>
+
 			<v-divider />
+
+			<!-- Итоговая строка -->
 			<div class="your d-flex justify-space-between">
 				<div class="text-h4">Сумма:</div>
-				<div class="stipend bg-secondary" :class="screenWidth < 800 ? 'text-h5' : 'text-h4'">
-					{{ found ? formattedStipend(recount['sum']) : 'Не найдено' }}
+				<div class="right-group">
+					<div
+						class="stipend"
+						:class="[found ? 'bg-primary' : 'bg-secondary', isNarrow ? 'text-h5' : 'text-h4']"
+					>
+						{{ found ? formattedStipend(recount['sum']) : hasInput ? 'Не найдено' : '0,00 ₽' }}
+					</div>
+					<span v-show="hasInput && !found">
+						<v-tooltip
+							text="Не найден такой вариант суммы"
+							location="start"
+							content-class="tooltip-large"
+						>
+							<template #activator="{ props }">
+								<v-btn
+									v-bind="props"
+									:icon="mdiInformationOutline"
+									variant="tonal"
+									size="x-small"
+									color="grey"
+									style="font-size: medium"
+								/>
+							</template>
+						</v-tooltip>
+					</span>
 				</div>
 			</div>
 		</div>
@@ -198,12 +343,17 @@ const formattedStipend = (stipend: number): string => {
 	margin: 13px 0 10px;
 }
 
+.right-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
 .sum-plus {
 	height: 54px;
 	display: flex;
 	align-items: center;
 	font-size: 20px;
-	background: green;
 	color: white;
 	border-radius: 999px;
 	margin: 10px 0;
@@ -244,5 +394,9 @@ const formattedStipend = (stipend: number): string => {
 	overflow-y: auto;
 	height: 100%;
 	padding: 24px 24px 112px;
+}
+
+.tooltip-large {
+	font-size: 1rem !important;
 }
 </style>

@@ -37,6 +37,11 @@ export const vuetify = createVuetify({
 		VCheckbox: {
 			color: 'rgb(0, 1, 76)',
 		},
+		VTooltip: {
+			'open-on-click': true,
+			'open-on-hover': true,
+			'open-on-focus': true,
+		},
 	},
 	theme: {
 		defaultTheme: 'profcomffLight',
