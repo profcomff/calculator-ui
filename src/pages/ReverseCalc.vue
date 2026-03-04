@@ -395,9 +395,7 @@ const getTooltipText = (field: StipendField): string => {
 	height: 100%;
 	padding: 24px 24px 112px;
 }
-</style>
 
-<style>
 .tooltip-large {
 	font-size: 1rem !important;
 }
