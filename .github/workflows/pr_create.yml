@@ -7,6 +7,19 @@ env:
     IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+    build-production-image:
+        name: Собираем production Docker
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
+
+            - name: Build production image
+              run: docker build --file deployment/Dockerfile .
+
     test:
         name: Проверяем стили
         runs-on: ubuntu-latest
