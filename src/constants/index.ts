@@ -1,13 +1,13 @@
 export const PAYMENTS = {
 	gas: {
-		only4: 3326,
-		miss: 3326,
-		with4and5: 3825,
-		only5: 4159,
+		only4: 3459,
+		miss: 3459,
+		with4and5: 3978,
+		only5: 4325,
 	},
-	pgas: 15394,
-	gss: 4990,
-	pgss: 15595,
+	pgas: 15799,
+	gss: 5190,
+	pgss: 16575,
 };
 
 export const TAX = 0.04;
