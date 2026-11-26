@@ -140,6 +140,18 @@ jobs:
         permissions:
             packages: read
         steps:
+            - name: Use a temporary Docker configuration
+              run: |
+                  config_dir=$(mktemp -d "$RUNNER_TEMP/ghcr.XXXXXXXX")
+                  echo "DOCKER_CONFIG=$config_dir" >> "$GITHUB_ENV"
+
+            - name: Log in to the Container registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
             - name: Run docker container
               run: |
                   docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:prod
