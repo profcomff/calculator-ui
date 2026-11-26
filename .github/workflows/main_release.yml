@@ -131,7 +131,7 @@ jobs:
     deploy-production:
         name: Раскатываем production среду
         runs-on: [ self-hosted, Linux, production ]
-        needs: [deploy-preprod, build-prod-image]
+        needs: build-prod-image
         environment:
             name: Production
             url: https://payments.profcomff.com/
